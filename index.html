@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Keuangan Pribadi - Login & Register</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <style>
+    body { font-family: sans-serif; max-width: 400px; margin: auto; padding: 30px; }
+    input { width: 100%; margin: 5px 0; padding: 10px; }
+    button { padding: 10px 20px; margin-top: 10px; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+  <h2 id="form-title">Login Keuangan Pribadi</h2>
+
+  <!-- Form Login -->
+  <div id="login-form">
+    <input type="email" id="login-email" placeholder="Email" />
+    <input type="password" id="login-password" placeholder="Password" />
+    <button onclick="login()">Login</button>
+    <p><a href="#" onclick="toggleForm()">Belum punya akun? Daftar di sini</a></p>
+  </div>
+
+  <!-- Form Register -->
+  <div id="register-form" class="hidden">
+    <input type="email" id="register-email" placeholder="Email" />
+    <input type="password" id="register-password" placeholder="Password" />
+    <button onclick="register()">Daftar</button>
+    <p><a href="#" onclick="toggleForm()">Sudah punya akun? Login di sini</a></p>
+  </div>
+
+  <p id="message"></p>
+
+  <script>
+    // GANTI DENGAN PUNYAMU
+    const SUPABASE_URL = 'https://pjnprakzzgtdmtfbvief.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBqbnByYWt6emd0ZG10ZmJ2aWVmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEzMDQ0OTAsImV4cCI6MjA2Njg4MDQ5MH0.DMH0x95tgtYUNsyVQIOVLy0xkW2h0x-a5kOvM7QTyE8';
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    async function login() {
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        document.getElementById('message').innerText = "❌ " + error.message;
+      } else {
+        document.getElementById('message').innerText = "✅ Login berhasil!";
+        window.location.href = "dashboard.html"; // Nanti kita buat halaman ini
+      }
+    }
+
+    async function register() {
+      const email = document.getElementById('register-email').value;
+      const password = document.getElementById('register-password').value;
+
+      const { data, error } = await supabase.auth.signUp({ email, password });
+
+      if (error) {
+        document.getElementById('message').innerText = "❌ " + error.message;
+      } else {
+        document.getElementById('message').innerText = "✅ Akun berhasil dibuat! Cek email untuk verifikasi.";
+      }
+    }
+
+    function toggleForm() {
+      const loginForm = document.getElementById('login-form');
+      const registerForm = document.getElementById('register-form');
+      const title = document.getElementById('form-title');
+
+      loginForm.classList.toggle('hidden');
+      registerForm.classList.toggle('hidden');
+      title.innerText = loginForm.classList.contains('hidden') ? "Daftar Akun Baru" : "Login Keuangan Pribadi";
+      document.getElementById('message').innerText = '';
+    }
+  </script>
+
+</body>
+</html>
